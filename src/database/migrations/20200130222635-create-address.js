@@ -29,9 +29,16 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        cep: {
+        zip_code: {
           type: Sequelize.STRING,
           allowNull: false,
+        },
+        recipient_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'recipients', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
         },
         created_at: {
           type: Sequelize.DATE,

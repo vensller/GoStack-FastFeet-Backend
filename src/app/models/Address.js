@@ -9,7 +9,8 @@ class Address extends Model {
         complement: Sequelize.STRING,
         state: Sequelize.STRING,
         city: Sequelize.STRING,
-        cep: Sequelize.STRING,
+        zip_code: Sequelize.STRING,
+        recipient_id: Sequelize.INTEGER,
       },
       {
         sequelize,

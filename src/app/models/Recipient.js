@@ -5,7 +5,6 @@ class Recipient extends Model {
     super.init(
       {
         name: Sequelize.STRING,
-        address_id: Sequelize.INTEGER,
       },
       {
         sequelize,

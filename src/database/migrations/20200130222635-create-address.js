@@ -52,7 +52,7 @@ module.exports = {
       {
         uniqueKeys: {
           address_unique: {
-            fields: ['street', 'house_number', 'state', 'city'],
+            fields: ['street', 'house_number', 'state', 'city', 'recipient_id'],
           },
         },
       }

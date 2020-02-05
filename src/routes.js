@@ -8,6 +8,7 @@ import SessionController from './app/controllers/SessionController';
 import RecipientController from './app/controllers/RecipientController';
 import AddressController from './app/controllers/AddressController';
 import FileController from './app/controllers/FileController';
+import DeliverymanController from './app/controllers/DeliverymanController';
 
 // Auth middlewares
 import authMiddleware from './app/middlewares/Auth/auth';
@@ -19,6 +20,10 @@ import recipientIDMiddleware from './app/middlewares/Recipient/recipientId';
 // Address middlewares
 import addressValidation from './app/middlewares/Address/addressValidation';
 import addressIdMiddleware from './app/middlewares/Address/addressId';
+
+// Deliveryman middlewares
+import deliverymanId from './app/middlewares/Deliveryman/deliverymanId';
+import deliverymanValidation from './app/middlewares/Deliveryman/deliverymanValidation';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -50,5 +55,10 @@ routes.put('/addresses/:id', addressIdMiddleware, AddressController.update);
 routes.delete('/addresses/:id', addressIdMiddleware, AddressController.destroy);
 
 routes.post('/files', upload.single('file'), FileController.store);
+
+routes.get('/deliverymen', DeliverymanController.index);
+routes.post('/deliverymen', deliverymanValidation, DeliverymanController.store);
+routes.put('/deliverymen/:id', deliverymanId, DeliverymanController.update);
+routes.delete('/deliverymen/:id', deliverymanId, DeliverymanController.destroy);
 
 export default routes;

@@ -9,6 +9,7 @@ class Deliveryman extends Model {
       },
       {
         sequelize,
+        tableName: 'deliverymen',
       }
     );
 

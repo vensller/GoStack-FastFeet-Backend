@@ -11,6 +11,12 @@ class Address extends Model {
         city: Sequelize.STRING,
         zip_code: Sequelize.STRING,
         recipient_id: Sequelize.INTEGER,
+        full_address: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return `Rua ${this.street}, ${this.house_number}. ${this.city} - ${this.state} - ${this.zip_code} ${this.complement}`;
+          },
+        },
       },
       {
         sequelize,

@@ -32,6 +32,7 @@ class Delivery extends Model {
       as: 'deliveryman',
     });
     this.belongsTo(models.Address, { foreignKey: 'address_id', as: 'address' });
+    this.hasMany(models.DeliveryProblem, { foreignKey: 'delivery_id' });
   }
 }
 

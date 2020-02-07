@@ -14,6 +14,7 @@ import DeliverymanPackagesController from './app/controllers/DeliverymanPackages
 import PickupPackageController from './app/controllers/PickupPackageController';
 import DeliverPackageController from './app/controllers/DeliverPackageController';
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
+import ProblematicPackagesController from './app/controllers/ProblematicPackagesController';
 
 // Auth middlewares
 import authMiddleware from './app/middlewares/Auth/auth';
@@ -67,6 +68,9 @@ routes.get('/delivery/:delivery_id/problems', DeliveryProblemController.index);
 routes.post('/delivery/:delivery_id/problems', DeliveryProblemController.store);
 
 routes.use(authMiddleware);
+
+// Problematic packages
+routes.get('/problems/deliveries', ProblematicPackagesController.index);
 
 routes.put('/users', UserController.update);
 

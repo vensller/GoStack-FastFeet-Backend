@@ -10,7 +10,11 @@ class DeliveryController {
   async index(req, res) {
     return res.json(
       await Delivery.findAll({
-        where: { canceled_at: null },
+        where: {
+          canceled_at: null,
+          end_date: null,
+          deliveryman_id: req.params.deliveryman_id,
+        },
         include: [
           {
             model: Address,

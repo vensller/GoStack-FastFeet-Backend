@@ -10,6 +10,7 @@ import AddressController from './app/controllers/AddressController';
 import FileController from './app/controllers/FileController';
 import DeliverymanController from './app/controllers/DeliverymanController';
 import DeliveryController from './app/controllers/DeliveryController';
+import DeliverymanPackagesController from './app/controllers/DeliverymanPackagesController';
 
 // Auth middlewares
 import authMiddleware from './app/middlewares/Auth/auth';
@@ -36,6 +37,15 @@ const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+
+// Show Deliveries of Deliveryman
+routes.get('/deliveries/:deliveryman_id', DeliveryController.index);
+
+// Show Finished Deliveries of Deliveryman
+routes.get(
+  '/deliveryman/:deliveryman_id/deliveries',
+  DeliverymanPackagesController.index
+);
 
 routes.use(authMiddleware);
 
@@ -72,7 +82,6 @@ routes.put('/deliverymen/:id', deliverymanId, DeliverymanController.update);
 routes.delete('/deliverymen/:id', deliverymanId, DeliverymanController.destroy);
 
 // Delivery routes
-routes.get('/deliveries', DeliveryController.index);
 routes.post(
   '/deliveries',
   deliveryFields,

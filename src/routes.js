@@ -15,6 +15,7 @@ import PickupPackageController from './app/controllers/PickupPackageController';
 import DeliverPackageController from './app/controllers/DeliverPackageController';
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 import ProblematicPackagesController from './app/controllers/ProblematicPackagesController';
+import CancelDeliveryController from './app/controllers/CancelDeliveryController';
 
 // Auth middlewares
 import authMiddleware from './app/middlewares/Auth/auth';
@@ -69,9 +70,6 @@ routes.post('/delivery/:delivery_id/problems', DeliveryProblemController.store);
 
 routes.use(authMiddleware);
 
-// Problematic packages
-routes.get('/problems/deliveries', ProblematicPackagesController.index);
-
 routes.put('/users', UserController.update);
 
 // Recipient routes
@@ -119,5 +117,14 @@ routes.put(
   DeliveryController.update
 );
 routes.delete('/deliveries/:id', deliveryId, DeliveryController.destroy);
+
+// Problematic packages
+routes.get('/problems/deliveries', ProblematicPackagesController.index);
+
+// Cancel delivery
+routes.delete(
+  '/problem/:problem_id/cancel-delivery',
+  CancelDeliveryController.destroy
+);
 
 export default routes;

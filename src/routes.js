@@ -12,6 +12,7 @@ import DeliverymanController from './app/controllers/DeliverymanController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliverymanPackagesController from './app/controllers/DeliverymanPackagesController';
 import PickupPackageController from './app/controllers/PickupPackageController';
+import DeliverPackageController from './app/controllers/DeliverPackageController';
 
 // Auth middlewares
 import authMiddleware from './app/middlewares/Auth/auth';
@@ -52,6 +53,12 @@ routes.get(
 routes.put(
   '/delivery/:delivery_id/pickup/:deliveryman_id',
   PickupPackageController.update
+);
+
+// Deliver package
+routes.put(
+  '/delivery/:delivery_id/deliver/:deliveryman_id',
+  DeliverPackageController.update
 );
 
 routes.use(authMiddleware);

@@ -9,7 +9,6 @@ import {
 } from 'date-fns';
 import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
-import Deliveryman from '../models/Deliveryman';
 
 class PickupPackageController {
   async update(req, res) {
@@ -19,23 +18,17 @@ class PickupPackageController {
       return res.status(400).json({ error: 'Delivery does not exists' });
     }
 
-    const deliveryman = await Deliveryman.findByPk(req.params.deliveryman_id);
-
-    if (!deliveryman) {
-      return res.status(400).json({ error: 'Deliveryman does not exists' });
-    }
-
-    if (delivery.deliveryman_id !== deliveryman.id) {
+    if (delivery.deliveryman_id !== Number(req.params.deliveryman_id)) {
       return res
         .status(400)
         .json({ error: 'This package does not belongs to the delivery' });
     }
 
-    if (delivery.start_date !== null) {
+    if (delivery.start_date) {
       return res.status(400).json({ error: 'This package was already picked' });
     }
 
-    if (delivery.end_date !== null) {
+    if (delivery.end_date) {
       return res
         .status(400)
         .json({ error: 'This package was already delivered' });
@@ -56,7 +49,7 @@ class PickupPackageController {
         start_date: {
           [Op.between]: [startOfDay(actualDate), endOfDay(actualDate)],
         },
-        deliveryman_id: deliveryman.id,
+        deliveryman_id: req.params.deliveryman_id,
       },
     });
 

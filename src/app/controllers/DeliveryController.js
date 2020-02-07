@@ -86,6 +86,12 @@ class DeliveryController {
         .json({ error: 'You can not update a canceled delivery' });
     }
 
+    if (req.body.canceled_at) {
+      return res
+        .status(401)
+        .json({ error: 'You cannot cancel a delivery by this route' });
+    }
+
     await req.deliveryExists.update(req.body);
 
     return res.json({

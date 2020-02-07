@@ -1,4 +1,5 @@
 import Delivery from '../models/Delivery';
+import File from '../models/File';
 
 class DeliveryPackageController {
   async update(req, res) {
@@ -24,7 +25,20 @@ class DeliveryPackageController {
         .json({ error: 'This package was already delivered' });
     }
 
-    await delivery.update({ end_date: new Date() });
+    if (!req.body.signature_id) {
+      return res.status(400).json({ error: 'Signature was not provided' });
+    }
+
+    const signature = await File.findByPk(req.body.signature_id);
+
+    if (!signature) {
+      return res.status(400).json({ error: 'Signature not found' });
+    }
+
+    await delivery.update({
+      end_date: new Date(),
+      signature_id: req.body.signature_id,
+    });
 
     return res.json(delivery);
   }

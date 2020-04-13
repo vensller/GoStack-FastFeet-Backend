@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import Deliveryman from '../models/Deliveryman';
 import File from '../models/File';
 
@@ -12,6 +13,11 @@ class DeliverymanController {
             attributes: ['name', 'path', 'url'],
           },
         ],
+        where: {
+          name: {
+            [Sequelize.Op.iLike]: `%${req.query.name ? req.query.name : ''}%`,
+          },
+        },
       })
     );
   }

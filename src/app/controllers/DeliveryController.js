@@ -1,3 +1,4 @@
+import Sequelize from 'sequelize';
 import Delivery from '../models/Delivery';
 import Queue from '../../lib/Queue';
 import DeliveryMail from '../jobs/DeliveryMail';
@@ -14,6 +15,11 @@ class DeliveryController {
           canceled_at: null,
           end_date: null,
           deliveryman_id: req.params.deliveryman_id,
+          product: {
+            [Sequelize.Op.iLike]: `%${
+              req.query.product ? req.query.product : ''
+            }%`,
+          },
         },
         include: [
           {

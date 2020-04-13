@@ -1,8 +1,17 @@
+import Sequelize from 'sequelize';
 import Recipient from '../models/Recipient';
 
 class RecipientController {
   async index(req, res) {
-    return res.json(await Recipient.findAll());
+    return res.json(
+      await Recipient.findAll({
+        where: {
+          name: {
+            [Sequelize.Op.iLike]: `%${req.query.name ? req.query.name : ''}%`,
+          },
+        },
+      })
+    );
   }
 
   async store(req, res) {

@@ -6,7 +6,6 @@ import multerConfig from './config/multer';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import RecipientController from './app/controllers/RecipientController';
-import AddressController from './app/controllers/AddressController';
 import FileController from './app/controllers/FileController';
 import DeliverymanController from './app/controllers/DeliverymanController';
 import DeliveryController from './app/controllers/DeliveryController';
@@ -26,7 +25,6 @@ import recipientIDMiddleware from './app/middlewares/Recipient/recipientId';
 
 // Address middlewares
 import addressValidation from './app/middlewares/Address/addressValidation';
-import addressIdMiddleware from './app/middlewares/Address/addressId';
 
 // Deliveryman middlewares
 import deliverymanId from './app/middlewares/Deliveryman/deliverymanId';
@@ -74,11 +72,17 @@ routes.put('/users', UserController.update);
 
 // Recipient routes
 routes.get('/recipients', RecipientController.index);
-routes.post('/recipients', recipientValidation, RecipientController.store);
+routes.post(
+  '/recipients',
+  recipientValidation,
+  addressValidation,
+  RecipientController.store
+);
 routes.put(
   '/recipients/:id',
   recipientIDMiddleware,
   recipientValidation,
+  addressValidation,
   RecipientController.update
 );
 routes.delete(
@@ -86,12 +90,6 @@ routes.delete(
   recipientIDMiddleware,
   RecipientController.destroy
 );
-
-// Address routes
-routes.get('/addresses', AddressController.index);
-routes.post('/addresses', addressValidation, AddressController.store);
-routes.put('/addresses/:id', addressIdMiddleware, AddressController.update);
-routes.delete('/addresses/:id', addressIdMiddleware, AddressController.destroy);
 
 // Upload file route
 routes.post('/files', upload.single('file'), FileController.store);

@@ -8,7 +8,6 @@ export default async (req, res, next) => {
     state: Yup.string().required(),
     city: Yup.string().required(),
     zip_code: Yup.string().required(),
-    recipient_id: Yup.number().required(),
   });
 
   if (!(await schema.isValid(req.body))) {

@@ -16,7 +16,7 @@ class DeliverymanController {
           {
             model: File,
             as: 'avatar',
-            attributes: ['name', 'path', 'url'],
+            attributes: ['id', 'name', 'path', 'url'],
           },
         ],
         where: {
@@ -58,7 +58,10 @@ class DeliverymanController {
         where: { email: req.body.email },
       });
 
-      if (deliveryWithEmail) {
+      if (
+        deliveryWithEmail &&
+        req.deliverymanExists.id !== deliveryWithEmail.id
+      ) {
         return res.status(400).json({ error: 'E-mail already in use' });
       }
     }

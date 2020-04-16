@@ -13,6 +13,13 @@ class Recipient extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.hasOne(models.Address, {
+      foreignKey: 'recipient_id',
+      as: 'address',
+    });
+  }
 }
 
 export default Recipient;

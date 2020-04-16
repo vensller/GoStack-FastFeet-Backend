@@ -5,6 +5,12 @@ import Database from '../../database/index';
 
 class RecipientController {
   async index(req, res) {
+    let offset = 0;
+
+    if (req.query.count && req.query.page) {
+      offset = req.query.count * req.query.page - req.query.count;
+    }
+
     return res.json(
       await Recipient.findAll({
         where: {
@@ -12,6 +18,15 @@ class RecipientController {
             [Sequelize.Op.iLike]: `%${req.query.name ? req.query.name : ''}%`,
           },
         },
+        order: ['id'],
+        include: [
+          {
+            model: Address,
+            as: 'address',
+          },
+        ],
+        limit: req.query.count,
+        offset,
       })
     );
   }
@@ -65,21 +80,58 @@ class RecipientController {
   }
 
   async update(req, res) {
-    if (req.recipientExists.name === req.body.name) {
-      return res.json(req.recipientExists);
-    }
-
     const recipientWithNewName = await Recipient.findOne({
       where: { name: req.body.name },
     });
 
     if (recipientWithNewName) {
-      return res.status(400).json({ error: 'Recipient found with name' });
+      return res
+        .status(400)
+        .json({ error: 'Já existe um destinatário cadastrado com esse nome' });
     }
 
-    const recipient = await req.recipientExists.update(req.body);
+    if (!req.body.address || !req.body.address.id) {
+      return res.status(400).json({ error: 'Endereço não foi informado' });
+    }
 
-    return res.json(recipient);
+    const addressExists = await Address.findByPk(req.body.address.id);
+
+    if (!addressExists) {
+      return res.status(400).json({ error: 'Endereço  inexistente' });
+    }
+
+    const transaction = await Database.transaction();
+
+    try {
+      const { id, name } = await req.recipientExists.update(req.body, {
+        transaction,
+      });
+
+      const {
+        street,
+        house_number,
+        complement,
+        zip_code,
+        city,
+        state,
+      } = await addressExists.update(req.body.address, { transaction });
+
+      await transaction.commit();
+
+      return res.json({
+        id,
+        name,
+        street,
+        house_number,
+        complement,
+        zip_code,
+        city,
+        state,
+      });
+    } catch (error) {
+      transaction.rollback();
+      return res.json({ error: 'Não foi possível salvar o destinatário' });
+    }
   }
 
   async destroy(req, res) {

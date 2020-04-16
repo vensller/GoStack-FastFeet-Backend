@@ -90,17 +90,17 @@ class RecipientController {
         .json({ error: 'Já existe um destinatário cadastrado com esse nome' });
     }
 
-    if (!req.body.address || !req.body.address.id) {
+    if (!req.body.address_id) {
       return res.status(400).json({ error: 'Endereço não foi informado' });
     }
 
-    const addressExists = await Address.findByPk(req.body.address.id);
+    const addressExists = await Address.findByPk(req.body.address_id);
 
     if (!addressExists) {
       return res.status(400).json({ error: 'Endereço  inexistente' });
     }
 
-    const transaction = await Database.transaction();
+    const transaction = await Database.connection.transaction();
 
     try {
       const { id, name } = await req.recipientExists.update(req.body, {
@@ -114,7 +114,7 @@ class RecipientController {
         zip_code,
         city,
         state,
-      } = await addressExists.update(req.body.address, { transaction });
+      } = await addressExists.update(req.body, { transaction });
 
       await transaction.commit();
 

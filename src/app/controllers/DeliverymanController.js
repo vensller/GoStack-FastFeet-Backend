@@ -4,6 +4,12 @@ import File from '../models/File';
 
 class DeliverymanController {
   async index(req, res) {
+    let offset = 0;
+
+    if (req.query.count && req.query.page) {
+      offset = req.query.count * req.query.page - req.query.count;
+    }
+
     return res.json(
       await Deliveryman.findAll({
         include: [
@@ -18,6 +24,8 @@ class DeliverymanController {
             [Sequelize.Op.iLike]: `%${req.query.name ? req.query.name : ''}%`,
           },
         },
+        limit: req.query.count,
+        offset,
       })
     );
   }

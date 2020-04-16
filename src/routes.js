@@ -95,10 +95,10 @@ routes.delete(
 routes.post('/files', upload.single('file'), FileController.store);
 
 // Deliveryman routes
-routes.get('/deliverymen', DeliverymanController.index);
-routes.post('/deliverymen', deliverymanValidation, DeliverymanController.store);
-routes.put('/deliverymen/:id', deliverymanId, DeliverymanController.update);
-routes.delete('/deliverymen/:id', deliverymanId, DeliverymanController.destroy);
+routes.get('/couriers', DeliverymanController.index);
+routes.post('/couriers', deliverymanValidation, DeliverymanController.store);
+routes.put('/couriers/:id', deliverymanId, DeliverymanController.update);
+routes.delete('/couriers/:id', deliverymanId, DeliverymanController.destroy);
 
 // Delivery routes
 routes.post(

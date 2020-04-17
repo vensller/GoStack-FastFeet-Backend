@@ -9,12 +9,15 @@ import File from '../models/File';
 
 class DeliveryController {
   async index(req, res) {
+    let offset = 0;
+
+    if (req.query.count && req.query.page) {
+      offset = req.query.count * req.query.page - req.query.count;
+    }
+
     return res.json(
       await Delivery.findAll({
         where: {
-          canceled_at: null,
-          end_date: null,
-          deliveryman_id: req.params.deliveryman_id,
           product: {
             [Sequelize.Op.iLike]: `%${
               req.query.product ? req.query.product : ''
@@ -22,10 +25,6 @@ class DeliveryController {
           },
         },
         include: [
-          {
-            model: Address,
-            as: 'address',
-          },
           {
             model: Deliveryman,
             as: 'deliveryman',
@@ -42,6 +41,12 @@ class DeliveryController {
             model: Recipient,
             as: 'recipient',
             attributes: ['id', 'name'],
+            include: [
+              {
+                model: Address,
+                as: 'address',
+              },
+            ],
           },
           {
             model: File,
@@ -49,28 +54,27 @@ class DeliveryController {
             attributes: ['id', 'path', 'url'],
           },
         ],
+        limit: req.query.count,
+        offset,
+        order: ['id'],
       })
     );
   }
 
   async store(req, res) {
-    if (
-      !req.body.deliveryman_id ||
-      !req.body.recipient_id ||
-      !req.body.address_id
-    ) {
+    if (!req.body.deliveryman_id || !req.body.recipient_id) {
       return res
         .status(400)
-        .json({ error: 'Recipient, deliveryman and address are necessary' });
+        .json({ error: 'Destinatário e entregador são necessários' });
     }
 
     const delivery = await Delivery.create(req.body);
 
     await Queue.add(DeliveryMail.key, {
       delivery,
-      address: req.address,
       recipient: req.recipient,
       deliveryman: req.deliveryman,
+      address: req.recipient.address,
     });
 
     return res.json({
@@ -79,7 +83,6 @@ class DeliveryController {
       recipient_id: delivery.recipient_id,
       recipient: req.recipient,
       address_id: delivery.address_id,
-      address: req.address,
       deliveryman_id: delivery.deliveryman_id,
       deliveryman: req.deliveryman,
     });
@@ -106,7 +109,6 @@ class DeliveryController {
       recipient_id: req.deliveryExists.recipient_id,
       recipient: req.recipient,
       address_id: req.deliveryExists.address_id,
-      address: req.address,
       deliveryman_id: req.deliveryExists.deliveryman_id,
       deliveryman: req.deliveryman,
     });
@@ -114,7 +116,40 @@ class DeliveryController {
 
   async destroy(req, res) {
     await req.deliveryExists.update({ canceled_at: new Date() });
-    return res.json(req.deliveryExists);
+    return res.json(
+      await Delivery.findByPk(req.deliveryExists.id, {
+        include: [
+          {
+            model: Deliveryman,
+            as: 'deliveryman',
+            attributes: ['id', 'name', 'email'],
+            include: [
+              {
+                model: File,
+                as: 'avatar',
+                attributes: ['id', 'path', 'url'],
+              },
+            ],
+          },
+          {
+            model: Recipient,
+            as: 'recipient',
+            attributes: ['id', 'name'],
+            include: [
+              {
+                model: Address,
+                as: 'address',
+              },
+            ],
+          },
+          {
+            model: File,
+            as: 'signature',
+            attributes: ['id', 'path', 'url'],
+          },
+        ],
+      })
+    );
   }
 }
 

@@ -21,13 +21,6 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      address_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: { model: 'addresses', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
       signature_id: {
         type: Sequelize.INTEGER,
         allowNull: true,

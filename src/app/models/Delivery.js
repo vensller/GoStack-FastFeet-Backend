@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import DeliveryStatus from '../enumerates/DeliveryStatus';
 
 class Delivery extends Model {
   static init(sequelize) {
@@ -8,6 +9,28 @@ class Delivery extends Model {
         canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
+        status: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            if (this.canceled_at) {
+              return DeliveryStatus[3];
+            }
+
+            if (!this.start_date) {
+              return DeliveryStatus[0];
+            }
+
+            if (!this.canceled_at && !this.end_date) {
+              return DeliveryStatus[1];
+            }
+
+            if (this.end_date) {
+              return DeliveryStatus[2];
+            }
+
+            return DeliveryStatus[4];
+          },
+        },
       },
       {
         sequelize,
@@ -31,7 +54,6 @@ class Delivery extends Model {
       foreignKey: 'deliveryman_id',
       as: 'deliveryman',
     });
-    this.belongsTo(models.Address, { foreignKey: 'address_id', as: 'address' });
     this.hasMany(models.DeliveryProblem, { foreignKey: 'delivery_id' });
   }
 }

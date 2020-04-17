@@ -42,7 +42,7 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
 // Show Deliveries of Deliveryman
-routes.get('/deliveries/:deliveryman_id', DeliveryController.index);
+// routes.get('/deliveries/:deliveryman_id', DeliveryController.index);
 
 // Show Finished Deliveries of Deliveryman
 routes.get(
@@ -101,6 +101,7 @@ routes.put('/couriers/:id', deliverymanId, DeliverymanController.update);
 routes.delete('/couriers/:id', deliverymanId, DeliverymanController.destroy);
 
 // Delivery routes
+routes.get('/deliveries', DeliveryController.index);
 routes.post(
   '/deliveries',
   deliveryFields,

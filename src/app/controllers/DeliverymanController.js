@@ -24,6 +24,7 @@ class DeliverymanController {
             [Sequelize.Op.iLike]: `%${req.query.name ? req.query.name : ''}%`,
           },
         },
+        order: ['id'],
         limit: req.query.count,
         offset,
       })

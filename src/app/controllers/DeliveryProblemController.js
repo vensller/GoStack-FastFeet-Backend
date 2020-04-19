@@ -17,29 +17,25 @@ class DeliveryProblemController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Dados inválidos' });
     }
 
     const delivery = await Delivery.findByPk(req.params.delivery_id);
 
     if (!delivery) {
-      return res.status(400).json({ error: 'Delivery not found' });
+      return res.status(400).json({ error: 'Encomenda não foi encontrada' });
     }
 
     if (!delivery.start_date) {
-      return res.status(400).json({ error: 'The package was not picked' });
+      return res.status(400).json({ error: 'A encomenda não foi retirada' });
     }
 
     if (delivery.end_date) {
-      return res
-        .status(400)
-        .json({ error: 'The packages was already delivered' });
+      return res.status(400).json({ error: 'A encomenda já foi entregue' });
     }
 
     if (delivery.canceled_at) {
-      return res
-        .status(400)
-        .json({ error: 'The delivery was alread canceled' });
+      return res.status(400).json({ error: 'A encomenda já foi cancelada' });
     }
 
     const problem = await DeliveryProblem.create({

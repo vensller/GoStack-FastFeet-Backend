@@ -11,16 +11,14 @@ class DeliverymanPackagesController {
       await Delivery.findAll({
         where: {
           canceled_at: null,
-          end_date: {
-            [Op.not]: null,
-          },
+          end_date: req.query.delivered
+            ? {
+                [Op.not]: null,
+              }
+            : null,
           deliveryman_id: req.params.deliveryman_id,
         },
         include: [
-          {
-            model: Address,
-            as: 'address',
-          },
           {
             model: Deliveryman,
             as: 'deliveryman',
@@ -37,6 +35,12 @@ class DeliverymanPackagesController {
             model: Recipient,
             as: 'recipient',
             attributes: ['id', 'name'],
+            include: [
+              {
+                model: Address,
+                as: 'address',
+              },
+            ],
           },
           {
             model: File,

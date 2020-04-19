@@ -15,23 +15,21 @@ class PickupPackageController {
     const delivery = await Delivery.findByPk(req.params.delivery_id);
 
     if (!delivery) {
-      return res.status(400).json({ error: 'Delivery does not exists' });
+      return res.status(400).json({ error: 'Entregador não existe' });
     }
 
     if (delivery.deliveryman_id !== Number(req.params.deliveryman_id)) {
       return res
         .status(400)
-        .json({ error: 'This package does not belongs to the delivery' });
+        .json({ error: 'Esse pacote não pertece a esse entregador' });
     }
 
     if (delivery.start_date) {
-      return res.status(400).json({ error: 'This package was already picked' });
+      return res.status(400).json({ error: 'Esse pacote já foi retirado' });
     }
 
     if (delivery.end_date) {
-      return res
-        .status(400)
-        .json({ error: 'This package was already delivered' });
+      return res.status(400).json({ error: 'Esse pacote já foi entregue' });
     }
 
     const actualDate = new Date();
@@ -41,7 +39,7 @@ class PickupPackageController {
     if (isBefore(actualDate, initDate) || isAfter(actualDate, endDate)) {
       return res
         .status(401)
-        .json({ error: 'You can only pickup packages from 08:00 to 18:00' });
+        .json({ error: 'Você só pode fazer retiradas entre 08:00 e 18:00' });
     }
 
     const todayDeliveries = await Delivery.findAll({
@@ -56,7 +54,7 @@ class PickupPackageController {
     if (todayDeliveries.length >= 5) {
       return res
         .status(401)
-        .json({ error: 'This delivery already picked up 5 packages today' });
+        .json({ error: 'Esse entregador já retirou 5 encomendas hoje' });
     }
 
     await delivery.update({ start_date: actualDate });

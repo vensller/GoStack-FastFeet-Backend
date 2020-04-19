@@ -15,6 +15,7 @@ import DeliverPackageController from './app/controllers/DeliverPackageController
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 import ProblematicPackagesController from './app/controllers/ProblematicPackagesController';
 import CancelDeliveryController from './app/controllers/CancelDeliveryController';
+import DeliverymanSessionController from './app/controllers/DeliverymanSessionController';
 
 // Auth middlewares
 import authMiddleware from './app/middlewares/Auth/auth';
@@ -40,9 +41,12 @@ const upload = multer(multerConfig);
 
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+routes.post('/deliverymansessions', DeliverymanSessionController.store);
 
 // Show Deliveries of Deliveryman
 // routes.get('/deliveries/:deliveryman_id', DeliveryController.index);
+
+routes.use(authMiddleware);
 
 // Show Finished Deliveries of Deliveryman
 routes.get(
@@ -65,8 +69,6 @@ routes.put(
 // Delivery problems
 routes.get('/delivery/:delivery_id/problems', DeliveryProblemController.index);
 routes.post('/delivery/:delivery_id/problems', DeliveryProblemController.store);
-
-routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
 
